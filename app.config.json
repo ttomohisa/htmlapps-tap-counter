@@ -1,0 +1,22 @@
+{
+  "$schema": "./schemas/app-config.schema.json",
+  "name": "Tap Counter",
+  "nameJa": "Tap Counter",
+  "slug": "tap-counter",
+  "version": "1.0.0",
+  "description": "A fast, installation-free multi-counter for phones, with full-screen tap mode, undo, haptics, and local-only storage.",
+  "descriptionJa": "画面タップで素早く数えられる、複数カウンター・集中モード・Undo対応のインストール不要カウンターです。",
+  "defaultLanguage": "auto",
+  "repository": {
+    "owner": "ttomohisa",
+    "name": "htmlapps-tap-counter"
+  },
+  "build": {
+    "output": "dist/index.html",
+    "blockRuntimeNetwork": true,
+    "selfExtract": {
+      "enabled": true,
+      "output": "dist/index.self-extract.html"
+    }
+  }
+}
