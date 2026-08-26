@@ -14,11 +14,11 @@ An installation-free, single-HTML tally counter for quickly counting people, inv
 
 No installation or account is required. Counter names, values, and settings are stored in your browser and are not sent to a server by the app.
 
-[![Tap Counter screenshot](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-tap-counter/)
+[![Tap Counter screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-tap-counter/)
 
 On a phone, Focus mode turns most of the screen into a dedicated tap target for one counter.
 
-[![Tap Counter Focus mode](assets/screenshot-mobile.png)](https://ttomohisa.github.io/htmlapps-tap-counter/)
+[![Tap Counter Focus mode](assets/screenshot-mobile-en.png)](https://ttomohisa.github.io/htmlapps-tap-counter/)
 
 ## Features
 
@@ -32,7 +32,7 @@ On a phone, Focus mode turns most of the screen into a dedicated tap target for 
 - Confirmation dialogs for reset, delete, and reset-all actions
 - Always-visible total count and counter count
 - Copy a summary or use the system share sheet when supported
-- Optional vibration feedback on supported devices
+- Optional vibration feedback on supported devices (off by default)
 - Optional Screen Wake Lock while using Focus mode
 - Automatic persistence with LocalStorage
 - Japanese and English UI in the same HTML

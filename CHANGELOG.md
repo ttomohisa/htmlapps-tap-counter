@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 - 2026-08-27
+
+- Changed vibration feedback to default off, including migration from the v1.0.0 default.
+- Improved supported-device vibration reliability by triggering feedback earlier in the tap handler and using a clearer short pulse.
+- Fixed the missing dot in the header Help icon.
+- Renamed the local-processing badge to "完全ローカル処理" / "Fully local processing".
+- Improved summary sharing fallback so unsupported or failed native sharing quietly falls back to copying the summary.
+
 ## 1.0.0 - 2026-08-17
 
 - Initial release of Tap Counter.
