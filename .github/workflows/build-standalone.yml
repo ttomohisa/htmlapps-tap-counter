@@ -11,6 +11,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Test counter behavior
+        run: node --test tests/*.test.cjs
       - name: Build and verify
         shell: powershell
         run: .\scripts\check-repository.ps1

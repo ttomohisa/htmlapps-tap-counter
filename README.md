@@ -27,7 +27,8 @@ On a phone, Focus mode turns most of the screen into a dedicated tap target for 
 - Focus mode dedicated to a single counter
 - Use most of the screen as a `+1` tap target in Focus mode
 - Decrement and global Undo
-- Undo count changes, additions, renames, resets, deletions, and other recent actions
+- Edit counter names and current values directly from the card menu
+- Undo count changes, additions, edits, resets, deletions, and other recent actions
 - Lock mode to prevent accidental changes
 - Confirmation dialogs for reset, delete, and reset-all actions
 - Always-visible total count and counter count
@@ -70,7 +71,9 @@ The build also produces `dist/index.self-extract.html`. It is a single-HTML dist
 
 ### Managing counters
 
-Use the menu in the upper-right corner of each card to rename, reset, or delete that counter. Reset and delete actions ask for confirmation, and completed actions can still be restored with Undo.
+Use **Edit counter** in the upper-right card menu to change a counter’s name and current value together. Values must be whole numbers from -999999 to 999999. One **Undo** restores both fields to their previous values. Canceling or saving without changes adds no Undo history.
+
+The same menu also offers reset and delete. These actions ask for confirmation, and completed actions can still be restored with Undo.
 
 Up to 12 counters can be created. If the final remaining counter is deleted, a new empty default counter is created automatically.
 
@@ -152,7 +155,13 @@ The build process automatically:
 - Generates `dist/index.self-extract.html`
 - Verifies that the restored self-extracting output matches the readable standalone HTML
 
-Python, Node.js, and npm packages are not required.
+Python, Node.js, and npm packages are not required to build or use the app. The optional dependency-free behavioral test suite requires Node.js 24 or later:
+
+```sh
+node --test tests/*.test.cjs
+```
+
+CI runs these tests before building. The builder also refreshes `tap-counter.html`, the root-level copy of `dist/index.html`. Do not edit either generated copy directly.
 
 ## Privacy and runtime network protection
 

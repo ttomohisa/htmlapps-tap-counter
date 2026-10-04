@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added direct editing of a counter’s name and current value, with integer validation and one Undo for the complete edit.
+- Kept canceled and unchanged edits out of Undo history.
+- Added dependency-free behavior tests and synchronized the root HTML distribution during builds.
+
 ## 1.0.1 - 2026-08-27
 
 - Changed vibration feedback to default off, including migration from the v1.0.0 default.
