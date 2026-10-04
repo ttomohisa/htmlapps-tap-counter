@@ -25,6 +25,8 @@ The CSP blocks runtime network connections with `connect-src 'none'`.
 
 Each counter has an ID, display name, integer count, creation timestamp, and update timestamp. Up to 12 counters are stored.
 
+The Edit counter dialog preloads the current name and value. A validated name/value edit is one atomic mutation and creates one Undo snapshot. Unchanged saves and canceled or invalid edits do not mutate state, timestamps, or history.
+
 Before a mutating action, the current counter array is copied into a bounded undo stack. Undo restores the previous snapshot. The stack is deliberately limited to keep localStorage small and predictable.
 
 Focus mode updates only its visible count and summary state during rapid tapping. The dashboard cards are rendered again when Focus mode closes, avoiding unnecessary DOM work on every tap.

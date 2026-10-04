@@ -35,6 +35,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Test counter behavior
+        run: node --test tests/*.test.cjs
+
       - name: Build and verify standalone HTML
         shell: powershell
         run: .\scripts\check-repository.ps1
