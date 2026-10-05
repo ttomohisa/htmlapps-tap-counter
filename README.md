@@ -28,6 +28,7 @@ On a phone, Focus mode turns most of the screen into a dedicated tap target for 
 - Use most of the screen as a `+1` tap target in Focus mode
 - Decrement and global Undo
 - Edit counter names and current values directly from the card menu
+- Move counters up or down from the card menu; save and Undo their order
 - Undo count changes, additions, edits, resets, deletions, and other recent actions
 - Lock mode to prevent accidental changes
 - Confirmation dialogs for reset, delete, and reset-all actions
@@ -73,7 +74,9 @@ The build also produces `dist/index.self-extract.html`. It is a single-HTML dist
 
 Use **Edit counter** in the upper-right card menu to change a counter’s name and current value together. Values must be whole numbers from -999999 to 999999. One **Undo** restores both fields to their previous values. Canceling or saving without changes adds no Undo history.
 
-The same menu also offers reset and delete. These actions ask for confirmation, and completed actions can still be restored with Undo.
+Use **Move up** or **Move down** in the same menu to swap with the adjacent counter. The first counter cannot move up, and the last cannot move down. The saved order also appears in copied/shared summaries. Each move has one Undo, preserves all counts and names, and returns keyboard focus to the moved counter’s menu.
+
+The menu also offers reset and delete. Nonzero resets and deletions ask for confirmation and can be restored with Undo. Resetting a counter already at zero changes nothing and adds no Undo history.
 
 Up to 12 counters can be created. If the final remaining counter is deleted, a new empty default counter is created automatically.
 
