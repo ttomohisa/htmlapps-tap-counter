@@ -29,6 +29,10 @@ The Edit counter dialog preloads the current name and value. A validated name/va
 
 Before a mutating action, the current counter array is copied into a bounded undo stack. Undo restores the previous snapshot. The stack is deliberately limited to keep localStorage small and predictable.
 
+The array order is also the dashboard and summary order. Menu moves swap immediate neighbors after one existing Undo snapshot, without changing IDs, names, counts, or timestamps. Persistence and Undo need no new fields. The initial `default` ID with an empty stored name resolves to the localized “Counter 1” regardless of position. After rerendering a move, focus is restored by counter ID to its new menu button; the delayed announcement resolves the current position so an immediate Undo cannot announce a discarded position.
+
+Per-counter reset checks for zero before requesting confirmation. A no-op reset preserves timestamps, storage, and the last meaningful Undo snapshot. Nonzero resets retain confirmation and one Undo.
+
 Focus mode updates only its visible count and summary state during rapid tapping. The dashboard cards are rendered again when Focus mode closes, avoiding unnecessary DOM work on every tap.
 
 ## Progressive browser capabilities

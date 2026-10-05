@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added Japanese/English Move up and Move down menu actions with saved summary order, one Undo per move, edge disabling, focus restoration, and position announcements.
+- Kept the unnamed initial counter’s localized identity stable after reordering without changing stored names or the data schema.
+- Fixed already-zero resets consuming Undo history and changing timestamps; real resets still require confirmation.
+- Added behavioral regressions for ordering, boundaries, reload, interleaved edits/counts/deletion, default names, storage failure, and reset cancellation.
+
 - Added direct editing of a counter’s name and current value, with integer validation and one Undo for the complete edit.
 - Kept canceled and unchanged edits out of Undo history.
 - Added dependency-free behavior tests and synchronized the root HTML distribution during builds.

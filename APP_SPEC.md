@@ -31,8 +31,12 @@ A user can create one or more named counters, increment them quickly with large 
 - Focus mode uses most of the screen as a +1 tap target.
 - Focus mode includes decrement, undo, lock/unlock, and exit controls.
 - Lock mode prevents count changes until explicitly unlocked.
-- Global Undo restores the most recent increment, decrement, reset, add, edit, or delete action where practical.
-- Per-counter reset and delete use the reusable in-app confirmation pattern.
+- Global Undo restores the most recent increment, decrement, reset, add, edit, reorder, or delete action where practical.
+- Card-menu Move up / Move down swaps one counter with its immediate neighbor. Native disabled controls prevent moving past an edge; both are disabled with one counter.
+- The counter array is the single ordering source for cards, summaries, persistence, and Undo. Moves preserve counter fields and create exactly one Undo snapshot; invalid moves create none.
+- A move closes the menu, restores focus to that same counter’s menu control, and announces its current position.
+- The initial unnamed default counter retains its localized “Counter 1” identity after moves, reloads, and language changes without changing stored names or schema.
+- Per-counter nonzero reset and delete use the reusable in-app confirmation pattern. Resetting an already-zero counter is a no-op without confirmation, timestamp changes, saves, or Undo history.
 - Add / edit UI uses native `<dialog>` with mobile bottom-sheet behavior.
 - Optional haptic feedback uses `navigator.vibrate()` only when supported and enabled; lack of support must not block counting.
 - Optional Screen Wake Lock is requested in Focus mode when supported and enabled; failure must be silent except for a non-blocking status message.
@@ -79,7 +83,7 @@ Core counting, persistence, and Focus mode work via `file://`. Vibration and Scr
 - No unresolved placeholders or external runtime assets.
 - CSP contains `connect-src 'none'`.
 - Default counter works with one tap after first load.
-- Add, edit name/current value, increment, decrement, reset, delete, undo, lock, Focus mode, copy summary, and language switch work.
+- Add, edit name/current value, reorder, increment, decrement, reset, delete, undo, lock, Focus mode, copy summary, and language switch work.
 - An edit accepts only whole numbers from -999999 to 999999, changes name and value atomically, and creates one Undo entry. Invalid edits, cancellation, and unchanged saves do not change counters or Undo history.
 - State survives reload when localStorage is available.
 - A card's decrement/focus/menu controls never increment the counter accidentally.
