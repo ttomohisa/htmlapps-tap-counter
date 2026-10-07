@@ -3,7 +3,7 @@
 ## 1. Product identity
 
 - **Name:** Tap Counter
-- **Version:** 1.0.1
+- **Version:** 1.0.2
 - **Purpose:** Replace simple tally-counter apps with an installation-free, smartphone-first multi-counter that works entirely in the browser.
 - **Primary users:** People counting visitors, inventory, repetitions, laps, events, observations, or any repeated item on a phone.
 - **Release artifacts:** `dist/index.html` and `dist/index.self-extract.html`

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
+- Localize the Help close control in Japanese and English.
+
 - Added Japanese/English Move up and Move down menu actions with saved summary order, one Undo per move, edge disabling, focus restoration, and position announcements.
 - Kept the unnamed initial counter’s localized identity stable after reordering without changing stored names or the data schema.
 - Fixed already-zero resets consuming Undo history and changing timestamps; real resets still require confirmation.

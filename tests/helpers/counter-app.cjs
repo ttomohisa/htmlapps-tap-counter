@@ -4,7 +4,9 @@ const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 const vm = require('node:vm');
-const html = readFileSync(process.env.TAP_COUNTER_HTML || resolve(__dirname, '../../src/index.template.html'), 'utf8');
+let html = readFileSync(process.env.TAP_COUNTER_HTML || resolve(__dirname, '../../src/index.template.html'), 'utf8');
+const payload = html.match(/const b='([A-Za-z0-9+/=]+)'/);
+if (payload) html = require('node:zlib').gunzipSync(Buffer.from(payload[1], 'base64')).toString('utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
 
 function boot(saved, { storageFails = false, language = 'en' } = {}) {
@@ -56,6 +58,7 @@ function boot(saved, { storageFails = false, language = 'en' } = {}) {
   }
   for (const match of html.matchAll(/<[^!\/][^>]*>/g)) {
     const tag = match[0], el = new Element();
+    for (const attr of tag.matchAll(/(aria-[\w-]+|title)="([^"]*)"/g)) el.setAttribute(attr[1], attr[2]);
     const id = tag.match(/\bid="([^"]+)"/); if (id) nodes.set(id[1], el);
     for (const attr of tag.matchAll(/data-([\w-]+)="([^"]+)"/g)) {
       el.dataset[attr[1].replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = attr[2];
