@@ -3,7 +3,7 @@
   "name": "Tap Counter",
   "nameJa": "Tap Counter",
   "slug": "tap-counter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A fast, installation-free multi-counter for phones, with full-screen tap mode, undo, haptics, and local-only storage.",
   "descriptionJa": "画面タップで素早く数えられる、複数カウンター・集中モード・Undo対応のインストール不要カウンターです。",
   "defaultLanguage": "auto",
