@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3 - 2026-10-11
+
+- Stop background page scrolling while Help, settings, counter forms, menus, or confirmations are open; preserve their existing inner scrolling and Focus mode behavior.
+- Restore keyboard focus to the same counter’s current Focus launcher after exiting, including count/Undo rerenders; guard newer focus/modal ownership and stale entry callbacks.
+- 集中モード終了時に同じカウンターの「集中」ボタンへキーボードフォーカスを戻し、新しい操作やモーダルへの割り込みを防止。
+- Added Japanese/English small-screen guidance and modal CSS/event regression tests; retained the decorative local-processing shield.
+- ダイアログ表示中の背景スクロールを防ぎ、内部のスクロールと集中モードを維持しました。小さい画面向けの案内と回帰テストを追加しました。
+
 ## Unreleased
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.

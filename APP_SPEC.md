@@ -3,7 +3,7 @@
 ## 1. Product identity
 
 - **Name:** Tap Counter
-- **Version:** 1.0.2
+- **Version:** 1.0.3
 - **Purpose:** Replace simple tally-counter apps with an installation-free, smartphone-first multi-counter that works entirely in the browser.
 - **Primary users:** People counting visitors, inventory, repetitions, laps, events, observations, or any repeated item on a phone.
 - **Release artifacts:** `dist/index.html` and `dist/index.self-extract.html`
@@ -30,6 +30,7 @@ A user can create one or more named counters, increment them quickly with large 
 - Dedicated decrement and focus controls do not trigger an increment.
 - Focus mode uses most of the screen as a +1 tap target.
 - Focus mode includes decrement, undo, lock/unlock, and exit controls.
+- Exiting Focus restores keyboard focus to that counter's current Focus launcher after rerendering, or an available Add control if the launcher is gone. A newer focus owner or active modal is not interrupted, and stale entry frames cannot focus a closed or superseded Focus view.
 - Lock mode prevents count changes until explicitly unlocked.
 - Global Undo restores the most recent increment, decrement, reset, add, edit, reorder, or delete action where practical.
 - Card-menu Move up / Move down swaps one counter with its immediate neighbor. Native disabled controls prevent moving past an edge; both are disabled with one counter.
@@ -38,6 +39,7 @@ A user can create one or more named counters, increment them quickly with large 
 - The initial unnamed default counter retains its localized “Counter 1” identity after moves, reloads, and language changes without changing stored names or schema.
 - Per-counter nonzero reset and delete use the reusable in-app confirmation pattern. Resetting an already-zero counter is a no-op without confirmation, timestamp changes, saves, or Undo history.
 - Add / edit UI uses native `<dialog>` with mobile bottom-sheet behavior.
+- While a native modal dialog is open, the root page and body do not scroll; its existing inner body remains scrollable. Closing the modal restores normal dashboard scrolling without changing Focus mode's independent body lock.
 - Optional haptic feedback uses `navigator.vibrate()` only when supported and enabled; lack of support must not block counting.
 - Optional Screen Wake Lock is requested in Focus mode when supported and enabled; failure must be silent except for a non-blocking status message.
 - Copy summary always available; Web Share is progressive enhancement when supported.
