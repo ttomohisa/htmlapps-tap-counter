@@ -80,6 +80,10 @@ The menu also offers reset and delete. Nonzero resets and deletions ask for conf
 
 Up to 12 counters can be created. If the final remaining counter is deleted, a new empty default counter is created automatically.
 
+### Dialogs on small screens
+
+Scroll inside Help, settings, counter forms, and confirmations when their content does not fit. The background page stays still while a dialog is open and scrolls normally after it closes.
+
 ### Focus mode
 
 Focus mode hides configuration and other counters so the phone behaves more like a physical tally counter.
@@ -89,6 +93,8 @@ Focus mode hides configuration and other counters so the phone behaves more like
 - **Undo**: restore the previous action
 - **Lock**: temporarily disable count changes
 - Back button in the upper-left: exit Focus mode
+
+Closing Focus with the exit button or Escape returns keyboard focus to the same counter’s current Focus button, even after counting or Undo rerenders its card. If Undo removed that counter, focus returns to Add when available. A newer focused control or open modal keeps ownership.
 
 When supported, Screen Wake Lock can keep the display awake while Focus mode is open.
 
@@ -147,6 +153,8 @@ To run the full repository verification:
 ```powershell
 .\scripts\check-repository.ps1
 ```
+
+The full repository check requires Node.js 24 and runs the regression suite against the freshly built readable HTML. CSS-contract and DOM-adapter tests do not replace real browser/device checks for dialog scrolling.
 
 The build process automatically:
 

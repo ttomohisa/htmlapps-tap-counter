@@ -21,6 +21,10 @@ The release is one HTML document. Counter cards, Focus mode, local persistence, 
 
 The CSP blocks runtime network connections with `connect-src 'none'`.
 
+## Dialog scrolling
+
+The `html:has(dialog:modal)` and `body:has(dialog:modal)` rules stop background scrolling only while a native modal is active, including confirmation dialogs. Native close and cancellation automatically remove that state. Existing dialog dimensions and inner scroll regions are unchanged, and Focus mode retains its independent inline body lock. CSS-contract and DOM-adapter tests cover the rule and existing event flows; actual wheel/touch containment and short-screen content reachability require browser/device checks.
+
 ## State model
 
 Each counter has an ID, display name, integer count, creation timestamp, and update timestamp. Up to 12 counters are stored.
@@ -33,7 +37,7 @@ The array order is also the dashboard and summary order. Menu moves swap immedia
 
 Per-counter reset checks for zero before requesting confirmation. A no-op reset preserves timestamps, storage, and the last meaningful Undo snapshot. Nonzero resets retain confirmation and one Undo.
 
-Focus mode updates only its visible count and summary state during rapid tapping. The dashboard cards are rendered again when Focus mode closes, avoiding unnecessary DOM work on every tap.
+Focus mode updates only its visible count and summary state during rapid tapping. The dashboard cards are rendered again when Focus mode closes, avoiding unnecessary DOM work on every tap. Exit resolves the same counter’s newly rendered Focus launcher by ID and restores focus synchronously; a connected, enabled, visible Add button is the fallback. Restoration requires Focus to still own focus and no native modal to be active, and ordinary focus reveals an offscreen target. A generation guard prevents queued entry frames from reclaiming focus after exit or a newer Focus session. Active modals retain Escape and other keyboard handling.
 
 ## Progressive browser capabilities
 
