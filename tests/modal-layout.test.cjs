@@ -36,9 +36,9 @@ test('privacy badge keeps the decorative inline shield and local-only processing
   assert.match(html, /connect-src 'none'/);
 });
 
-test('Help explains dialog scrolling in both languages', () => {
-  assert.match(html, /data-help-lang="ja"[^>]*>[\s\S]*?ダイアログ内をスクロール[\s\S]*?背景のページは動きません/);
-  assert.match(html, /data-help-lang="en"[^>]*>[\s\S]*?Scroll inside the dialog[\s\S]*?background page stays still/);
+test('Help omits implementation commentary and retains user instructions', () => {
+  assert.doesNotMatch(html, /data-help-lang="ja"[^>]*>[\s\S]*?ダイアログ内をスクロール[\s\S]*?背景のページは動きません/);
+  assert.doesNotMatch(html, /data-help-lang="en"[^>]*>[\s\S]*?Scroll inside the dialog[\s\S]*?background page stays still/);
 });
 
 for (const [dialog, open] of [

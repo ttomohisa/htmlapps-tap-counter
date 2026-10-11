@@ -80,10 +80,6 @@ The menu also offers reset and delete. Nonzero resets and deletions ask for conf
 
 Up to 12 counters can be created. If the final remaining counter is deleted, a new empty default counter is created automatically.
 
-### Dialogs on small screens
-
-Scroll inside Help, settings, counter forms, and confirmations when their content does not fit. The background page stays still while a dialog is open and scrolls normally after it closes.
-
 ### Focus mode
 
 Focus mode hides configuration and other counters so the phone behaves more like a physical tally counter.
