@@ -109,8 +109,8 @@ test('Lock and repeated close preserve counter state and newer focus', () => {
   assert.deepEqual(plain(app.state.counters), before); assert.deepEqual(plain(app.state.undo), []);
 });
 
-test('Help describes returning keyboard focus in both languages', () => {
+test('Help omits implementation-specific focus commentary in both languages', () => {
   const { html } = require('./helpers/counter-app.cjs');
-  assert.ok(html.includes('終了すると、開いたカウンターの「集中」ボタンにキーボードフォーカスが戻ります。'));
-  assert.ok(html.includes('Closing Focus returns keyboard focus to that counter’s Focus button.'));
+  assert.ok(!html.includes('終了すると、開いたカウンターの「集中」ボタンにキーボードフォーカスが戻ります。'));
+  assert.ok(!html.includes('Closing Focus returns keyboard focus to that counter’s Focus button.'));
 });
