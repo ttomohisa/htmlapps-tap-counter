@@ -15,7 +15,7 @@ test('canonical verification runs regressions against the freshly built readable
 test('Pages build installs the same Node version as build and preview gates', () => {
   for (const workflow of ['build-standalone.yml', 'deploy-pages.yml', 'preview.yml']) {
     const source = read(`.github/workflows/${workflow}`);
-    assert.match(source, /uses: actions\/setup-node@v6/);
+    assert.match(source, /uses: actions\/setup-node@(?:v6|249970729cb0ef3589644e2896645e5dc5ba9c38)/);
     assert.match(source, /node-version: 24/);
     assert.match(source, /check-repository\.ps1/);
   }
