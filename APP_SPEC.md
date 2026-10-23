@@ -57,6 +57,7 @@ A user can create one or more named counters, increment them quickly with large 
 ## 6. UX decisions
 
 - Mobile-first from 320px upward.
+- The informational page footer is hidden at the existing 520px phone breakpoint and retained on wider screens; action controls and their content clearance remain unchanged.
 - One-handed use is prioritized: primary tap target is large and increment feedback is immediate.
 - Multi-counter cards remain compact enough to scan at a glance.
 - Focus mode hides configuration and treats the screen as a physical tally counter.
