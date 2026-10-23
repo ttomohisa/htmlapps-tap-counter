@@ -87,3 +87,23 @@ test('dialog events: closing a modal preserves the existing Focus body lock unti
   app.closeFocus(); assert.equal(app.document.body.style.overflow, '');
   assert.equal(app.state.wake, false); assert.equal(app.state.haptics, false);
 });
+
+function phoneCss(css, width) {
+  const marker = `@media(max-width:${width}px)`;
+  const start = css.indexOf(marker);
+  assert.ok(start >= 0, `Existing phone breakpoint must remain: ${width}px`);
+  const opening = css.indexOf('{', start);
+  let depth = 1;
+  for (let end = opening + 1; end < css.length; end++) {
+    if (css[end] === '{') depth++;
+    if (css[end] === '}' && --depth === 0) return css.slice(opening + 1, end);
+  }
+  assert.fail('Unclosed phone breakpoint');
+}
+
+test('phone layouts hide only the informational footer at the compact breakpoint', () => {
+  assert.match(phoneCss(css, 520), /(?:^|})footer\{[^}]*display:none(?:;|})/);
+  assert.doesNotMatch(phoneCss(css, 760), /(?:^|})footer\{[^}]*display:none/);
+  assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /(?:^|})footer\{[^}]*display:none/);
+  assert.doesNotMatch(html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)[0], /<(?:button|input|select)\b/);
+});

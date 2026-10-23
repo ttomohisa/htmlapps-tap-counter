@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
+
 ## 1.0.3 - 2026-10-11
 
 - Stop background page scrolling while Help, settings, counter forms, menus, or confirmations are open; preserve their existing inner scrolling and Focus mode behavior.
