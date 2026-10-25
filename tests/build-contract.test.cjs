@@ -22,9 +22,9 @@ test('Pages build installs the same Node version as build and preview gates', ()
 });
 
 test('patch version is synchronized in config, specification, and source fallback', () => {
-  assert.equal(JSON.parse(read('app.config.json')).version, '1.0.3');
-  assert.match(read('APP_SPEC.md'), /\*\*Version:\*\* 1\.0\.3/);
-  assert.match(read('src/index.template.html'), /config\.version\|\|'1\.0\.3'/);
-  assert.match(read('src/index.template.html'), /id="versionBadge">v1\.0\.3<\/span>/);
-  assert.match(read('CHANGELOG.md'), /## 1\.0\.3/);
+  assert.equal(JSON.parse(read('app.config.json')).version, '1.0.4');
+  assert.match(read('APP_SPEC.md'), /\*\*Version:\*\* 1\.0\.4/);
+  assert.match(read('src/index.template.html'), /config\.version\|\|'1\.0\.4'/);
+  assert.match(read('src/index.template.html'), /id="versionBadge">v1\.0\.4<\/span>/);
+  assert.match(read('CHANGELOG.md'), /## 1\.0\.4/);
 });

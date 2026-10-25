@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.4 - 2026-10-25
 
 - Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
 
