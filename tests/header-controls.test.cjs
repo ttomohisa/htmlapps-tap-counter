@@ -33,7 +33,7 @@ for (const language of ['ja-JP', 'en-US']) {
       app.el('languageButton').dispatch('click');
       lang = lang === 'ja' ? 'en' : 'ja';
     }
-    assertLanguage(boot(app.stored(), { language }), lang);
+    assertLanguage(boot(app.stored(), { language, sharedLanguage: app.preferences.get('browser-kitty:ui-language:v1') }), lang);
   });
 }
 

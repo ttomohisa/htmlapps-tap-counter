@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add actual autosave failure/retry and safe unreadable-storage recovery, shared language without losing drafts, consistent action states and destructive dialog focus restoration.
+
 - Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
 
 ## 1.0.3 - 2026-10-11

@@ -92,3 +92,14 @@ Core counting, persistence, and Focus mode work via `file://`. Vibration and Scr
 - A card's decrement/focus/menu controls never increment the counter accidentally.
 - Rapid tapping does not select text or zoom the page unexpectedly.
 - Japanese and English fit at 320px width without horizontal page overflow.
+
+
+## Shared UI conventions
+
+- Report true autosave state and last successful write time in the main and Focus views; failed writes retain current data and offer Retry saving and the existing text summary escape.
+- Do not overwrite unreadable stored counters automatically. Retry access and confirm the scope before replacing stored data; cancellation leaves original bytes intact.
+- Keep the `tap-counter:v1` format and Undo snapshots compatible. Copy/share captures names and current values once and prevents duplicate pending requests. Summaries exclude settings/history.
+- Reset/delete confirms the named counter or all current values, starts with Cancel, preserves Undo, and restores a live logical focus target. No clearing of unrelated storage or common language.
+- Resolve language URL → shared preference → legacy counter JSON preference → supported navigator language → English, with no startup writes. Explicit switching keeps drafts, counters, history and open confirmation state, and reports unavailable preference storage.
+- The dark Focus counting button is a deliberate visual exception; native disabled and accessible keyboard behavior remain required.
+- Human acceptance remains necessary: both HTML variants at 320/360px, keyboard-only dialogs and Focus, rapid tapping, denied storage/reload, native sharing/clipboard, haptics and Wake Lock on supported devices. A pass requires no overflow, visible status/recovery, no lost data, Cancel-first focus with correct restoration, and no duplicate share or unintended increment.

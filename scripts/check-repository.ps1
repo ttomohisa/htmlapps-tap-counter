@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 & (Join-Path $Root 'build-standalone.ps1')
 $config = Get-Content -Raw -Encoding UTF8 (Join-Path $Root 'app.config.json') | ConvertFrom-Json
@@ -15,4 +15,6 @@ try {
 } finally {
     $env:TAP_COUNTER_HTML = $previousHtml
 }
+& node (Join-Path $Root 'scripts/verify-ui-artifacts.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'Shared UI artifact verification failed.' }
 Write-Host 'Repository checks passed' -ForegroundColor Green

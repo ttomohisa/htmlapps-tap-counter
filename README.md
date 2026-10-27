@@ -183,6 +183,14 @@ Tap Counter performs counting entirely in the browser.
 
 The GitHub Pages version requires an initial request to load the HTML, but the app does not transmit your counter contents afterward.
 
+## Saving and shared language
+
+The status above the counters and in Focus reports actual automatic storage success or failure. A failed write keeps counters and Undo usable in the current tab and keeps the last successful saved time. Use Retry saving when storage is available, or Copy summary to retain names and counts as text; summaries are not backups and omit settings and history. Unreadable stored data pauses automatic writes. Retrying checks access and asks before replacing existing unreadable data with the current counters.
+
+Language is selected from a valid `lang=ja/en` URL, the shared same-origin language preference, the existing counter data preference, or supported browser languages, in that order. Only an explicit language switch writes the shared preference. It preserves form drafts and history and does not rewrite counter data. If storage refuses the preference, the screen changes language with a visible session-only notice. Different origins and local-file contexts need not share preferences.
+
+The shared component is embedded at build time with checked JS/CSS hashes; it adds no runtime request. The dark Focus counting surface intentionally keeps its existing high-contrast appearance while other executable controls use the shared action states.
+
 ## Limitations
 
 - Clearing LocalStorage removes saved counters.

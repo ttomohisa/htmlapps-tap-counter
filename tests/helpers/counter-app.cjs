@@ -9,9 +9,9 @@ const payload = html.match(/const b='([A-Za-z0-9+/=]+)'/);
 if (payload) html = require('node:zlib').gunzipSync(Buffer.from(payload[1], 'base64')).toString('utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
 
-function boot(saved, { storageFails = false, language = 'en', deferFrames = false } = {}) {
+function boot(saved, { storageFails = false, readFails = false, rawSaved, sharedLanguage, url='https://example.test/', language = 'en', languages=[language], deferFrames = false } = {}) {
   const nodes = new Map(), all = [], timers = new Map(), frames = [];
-  let nextTimer = 0, now = 1000, stored = saved ? JSON.stringify(saved) : null;
+  let nextTimer = 0, now = 1000, stored = rawSaved??(saved ? JSON.stringify(saved) : null);const preferences=new Map(),writes=[];if(sharedLanguage)preferences.set('browser-kitty:ui-language:v1',sharedLanguage);
   class Element {
     constructor() {
       this.value = ''; this.textContent = ''; this.hidden = false; this.open = false;
@@ -21,6 +21,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
       this.classList = { add: (...xs) => xs.forEach(x => classes.add(x)), remove: (...xs) => xs.forEach(x => classes.delete(x)), toggle: (x, on) => on ? classes.add(x) : classes.delete(x), contains: x => classes.has(x) };
     }
     setAttribute(k, v) { this[k] = v; }
+    removeAttribute(k) { delete this[k]; }
     addEventListener(type, fn) { (this.listeners[type] ||= []).push(fn); }
     dispatch(type, extra = {}) {
       const event = { target: this, currentTarget: this, preventDefault() { this.defaultPrevented = true; }, ...extra };
@@ -30,7 +31,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
     }
     showModal() { this.open = true; this.modal = true; }
     close() { this.open = false; this.modal = false; this.dispatch('close'); }
-    focus(options) { this.focusOptions = options; document.activeElement = this; }
+    focus(options) { if(this.disabled || !this.isConnected || this.getClientRects().length===0)return; this.focusOptions = options; document.activeElement = this; }
     contains(node) { return node === this || this.children.some(child => child.contains(node)); }
     append(node) { node.parentElement = this; this.children.push(node); }
     set innerHTML(value) {
@@ -72,7 +73,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
     const el = new Element(); el.tagName = name;
     parents.at(-1)?.append(el);
     if (!/^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/.test(name) && !tag.endsWith('/>')) parents.push(el);
-    for (const attr of tag.matchAll(/(aria-[\w-]+|title)="([^"]*)"/g)) el.setAttribute(attr[1], attr[2]);
+    for (const attr of tag.matchAll(/(aria-[\w-]+|title|name)="([^"]*)"/g)) el.setAttribute(attr[1], attr[2]);
     const id = tag.match(/\bid="([^"]+)"/); if (id) nodes.set(id[1], el);
     for (const attr of tag.matchAll(/data-([\w-]+)="([^"]+)"/g)) {
       el.dataset[attr[1].replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = attr[2];
@@ -87,20 +88,21 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
     const attr = selector.match(/^\[data-([\w-]+)\]$/);
     return attr && Object.hasOwn(el.dataset, attr[1].replace(/-([a-z])/g, (_, c) => c.toUpperCase()));
   });
-  document.querySelector = selector => selector === 'dialog:modal' ? all.find(el => el.tagName === 'dialog' && el.open && el.modal) || null : null;
+  document.querySelector = selector => selector === 'dialog:modal' ? all.find(el => el.tagName === 'dialog' && el.open && el.modal) || null : selector==='meta[name="description"]'?all.find(el=>el.tagName==='meta'&&el.name==='description') : null;
   nodes.get('appConfig').textContent = '{"version":"test"}';
-  const context = vm.createContext({ document, navigator: { language }, HTMLElement: Element, HTMLInputElement: Element,
-    localStorage: { getItem: () => stored, setItem: (key, value) => { if (storageFails) throw Error('Storage unavailable'); stored = value; } },
+  const context = vm.createContext({ document, navigator: { language,languages }, HTMLElement: Element, HTMLInputElement: Element,URL,location:{href:url},history:{replaceState(state,title,next){context.location.href=next;}},
+    localStorage: { getItem: key => {if(readFails)throw Error('Storage read unavailable');return key==='tap-counter:v1'?stored:preferences.get(key)||null;}, setItem: (key, value) => { if (storageFails) throw Error('Storage unavailable');writes.push({key,value});if(key==='tap-counter:v1')stored=value;else preferences.set(key,value); } },
     Date: class extends Date { static now() { return ++now; } },
     setTimeout: fn => { timers.set(++nextTimer, fn); return nextTimer; }, clearTimeout: id => timers.delete(id),
     requestAnimationFrame: fn => deferFrames ? frames.push(fn) : fn(),
     getComputedStyle: el => { let visibility = 'visible'; for (let node = el; node; node = node.parentElement) if (node.style.visibility) { visibility = node.style.visibility; break; } return { visibility }; },
   });
   context.window = context; context.addEventListener = () => {};
+  const sharedPath=resolve(__dirname,'../../components/ui-conventions.js');if(require('node:fs').existsSync(sharedPath))vm.runInContext(readFileSync(sharedPath,'utf8'),context);
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
   // Expose lexical state only in the test VM; production ships no testing hook.
-  vm.runInContext(script.replace(/\}\)\(\);\s*$/, 'globalThis.app={state,openCounterDialog,summaryText,changeCount,openFocus,closeFocus,openActions,resetCounter,deleteCounter,effectiveName,moveCounter:typeof moveCounter==="function"?moveCounter:null};})();'), context);
-  return { ...context.app, el: id => nodes.get(id), document,
+  vm.runInContext(script.replace(/\}\)\(\);\s*$/, 'globalThis.app={state,openCounterDialog,summaryText,changeCount,openFocus,closeFocus,openActions,resetCounter,deleteCounter,effectiveName,moveCounter:typeof moveCounter==="function"?moveCounter:null,retrySave:typeof retrySave==="function"?retrySave:null,shareSummary};})();'), context);
+  return { ...context.app, el: id => nodes.get(id), document,context,writes,preferences,rawStored:()=>stored,setStorageFails:value=>storageFails=value,setReadFails:value=>readFails=value,
     translated: key => all.find(el => el.dataset.i18n === key)?.textContent,
     cards: () => document.querySelectorAll('.counter-card'),
     clickCard(id, action) { const card = document.querySelectorAll('.counter-card').find(el => el.dataset.id === id); const target = card?.querySelector(`[data-action="${action}"]`); assert.ok(target, `Missing ${action} control for ${id}`); nodes.get('counterGrid').dispatch('click', { target }); },
