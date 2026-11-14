@@ -28,7 +28,7 @@ test('CSS contract: existing bounded dialog bodies and the mobile bottom sheet s
 });
 
 test('privacy badge keeps the decorative inline shield and local-only processing copy', () => {
-  assert.match(html, /class="privacy-badge"><svg[^>]*aria-hidden="true"><path d="M12 3 5 6v5c0 4\.6 2\.9 8\.1 7 10 4\.1-1\.9 7-5\.4 7-10V6z"\/>/);
+  assert.match(html, /class="privacy-badge"><svg[^>]*aria-hidden="true"><path d="M12 3 5 6v5c0 4\.6 2\.8 8 7 10 4\.2-2 7-5\.4 7-10V6z"\/><path d="m9 12 2 2 4-5"\/>/);
   for (const lang of ['ja', 'en']) {
     const initial = saved(); initial.lang = lang;
     assert.equal(boot(initial).translated('localOnly'), lang === 'ja' ? '完全ローカル処理' : 'Fully local processing');
