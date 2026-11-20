@@ -13,8 +13,47 @@ async function exerciseActions(page, width, label) {
   await page.locator('.counter-main').first().click();
   assert.equal((await page.locator('.counter-value').first().innerText()).trim(), '1', label + ': counting action');
   assert.equal(await page.locator('#undoButton').isVisible(), true, label + ': Undo remains available');
+  const increment=page.locator('.counter-card').first().locator('[data-action="increment"]');
+  await increment.focus();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Enter');
+  assert.equal((await page.locator('.counter-value').first().innerText()).trim(),'3',label+': repeated Enter increments without lost focus');
+  assert.equal(await increment.evaluate(el=>document.activeElement===el),true,label+': increment button keeps keyboard focus');
 }
 
+
+async function setFirstCounter(page,value) {
+  await page.locator('.counter-card').first().locator('[data-action="menu"]').click();
+  await page.locator('#renameAction').click();
+  await page.locator('#initialCount').fill(String(value));
+  await page.locator('#counterSaveButton').click();
+  assert.equal((await page.locator('.counter-value').first().innerText()).trim(),String(value));
+}
+async function assertCountFits(page,label) {
+  const measurement=await page.locator('.counter-value').first().evaluate(el=>{
+    const range=document.createRange();range.selectNodeContents(el);
+    const text=range.getBoundingClientRect(),button=el.closest('button').getBoundingClientRect();
+    return {left:text.left,right:text.right,buttonLeft:button.left,buttonRight:button.right};
+  });
+  assert.ok(measurement.left>=measurement.buttonLeft-1&&measurement.right<=measurement.buttonRight+1,
+    label+': count text must fit tap target '+JSON.stringify(measurement));
+}
+async function exerciseFocusKeyboard(page,label){
+  await setFirstCounter(page,10);
+  await page.locator('.counter-card').first().locator('[data-action="focus"]').click();
+  await page.locator('#focusMinus').focus();await page.keyboard.press('Enter');
+  assert.equal((await page.locator('#focusCount').innerText()).trim(),'9',label+': focused Minus Enter decrements');
+  await page.locator('#focusUndo').focus();await page.keyboard.press('Space');
+  assert.equal((await page.locator('#focusCount').innerText()).trim(),'10',label+': focused Undo Space undoes');
+  await page.locator('#focusLock').focus();await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#focusTap').isDisabled(),true,label+': focused Lock Enter locks');
+  await page.locator('#focusLock').focus();await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#focusTap').isEnabled(),true,label+': focused Unlock Enter unlocks');
+  await page.locator('#focusTap').focus();await page.keyboard.press('Enter');
+  assert.equal((await page.locator('#focusCount').innerText()).trim(),'11',label+': focused tap Enter adds only once');
+  await page.locator('#focusExit').focus();await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#focusView').evaluate(el=>el.classList.contains('open')),false,label+': focused Exit Enter closes Focus');
+}
 async function main() {
   fs.mkdirSync(artifacts, {recursive:true});
   const browser = await chromium.launch();
@@ -69,6 +108,22 @@ async function main() {
         await page.locator(HELP).click();
         await page.locator('#helpDialog').locator(CLOSE).first().click();
         assert.equal(await page.locator('#helpDialog').isVisible(), false, label + ': Help reopens and closes');
+        if(file==='dist/index.html'){
+          for(const value of [999999,-999999]){await setFirstCounter(page,value);await assertCountFits(page,label+' '+value);}
+          if(width===393&&height===252){
+            await page.locator('.counter-card').first().locator('[data-action="focus"]').click();
+            const focusFit=await page.locator('#focusTap').evaluate(el=>{
+              const parent=el.getBoundingClientRect(),counter=el.querySelector('.focus-count').getBoundingClientRect(),
+                instruction=el.querySelector('.focus-instruction').getBoundingClientRect();
+              return {top:parent.top,bottom:parent.bottom,countTop:counter.top,countBottom:counter.bottom,
+                      instructionTop:instruction.top,instructionBottom:instruction.bottom};
+            });
+            assert.ok(focusFit.countTop>=focusFit.top-1&&focusFit.instructionBottom<=focusFit.bottom+1,
+              label+': landscape Focus text must fit '+JSON.stringify(focusFit));
+            await page.locator('#focusExit').click();
+          }
+          if(width===320||(width===393&&height===252))await exerciseFocusKeyboard(page,label);
+        }
         assert.deepEqual(errors, [], label + ': console errors');
         assert.deepEqual(requests, [], label + ': no external runtime requests');
         console.log('PASS ' + label);
