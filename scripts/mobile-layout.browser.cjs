@@ -27,7 +27,19 @@ async function setFirstCounter(page,value) {
   await page.locator('#renameAction').click();
   await page.locator('#initialCount').fill(String(value));
   await page.locator('#counterSaveButton').click();
-  assert.equal((await page.locator('.counter-value').first().innerText()).trim(),String(value));
+  const actual=(await page.locator('.counter-value').first().innerText()).trim();
+  if(actual!==String(value)){
+    const details=await page.evaluate(()=>({
+      dialogOpen:document.querySelector('#counterDialog').open,
+      name:document.querySelector('#counterName').value,
+      value:document.querySelector('#initialCount').value,
+      formValid:document.querySelector('#counterForm').checkValidity(),
+      toast:document.querySelector('#toast').textContent,
+      active:document.activeElement?.id,
+      storage:localStorage.getItem('tap-counter:v1')?.slice(0,250)
+    }));
+    throw new Error(`Edited count ${actual} != ${value}: ${JSON.stringify(details)}`);
+  }
 }
 async function assertCountFits(page,label) {
   const measurement=await page.locator('.counter-value').first().evaluate(el=>{
