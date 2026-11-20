@@ -41,7 +41,28 @@ test('Focus keyboard handler leaves Enter/Space on buttons to native activation'
   app.el('focusExit').dispatch('click');assert.equal(app.state.focusId,null);
 });
 
-test('storage write failures are visible and recover when a later write succeeds',()=>{
+test('dialog autofocus cannot steal input after the user moves to the numeric field',()=>{
+  const app=boot(saved(),{deferFrames:true});
+  app.openCounterDialog('a');
+  assert.equal(app.document.activeElement,app.el('counterName'));
+  app.el('initialCount').focus();
+  app.flushFrames();
+  assert.equal(app.document.activeElement,app.el('initialCount'));
+  app.cancel();
+});
+
+test('confirmation autofocus cannot override a new focus owner after opening',async()=>{
+  const app=boot(saved(),{deferFrames:true});
+  const pending=app.resetCounter('a');
+  assert.equal(app.document.activeElement,app.el('appConfirmCancel'));
+  app.el('appConfirmOk').focus();
+  app.flushFrames();
+  assert.equal(app.document.activeElement,app.el('appConfirmOk'));
+  app.el('appConfirmCancel').dispatch('click');
+  await pending;
+});
+
+test('storage write failures remain visible across language switches',()=>{
   const app=boot(saved(),{storageFails:true});
   app.changeCount('a',1);
   assert.equal(app.state.counters[0].count,8);
