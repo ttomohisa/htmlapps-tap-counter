@@ -101,6 +101,15 @@ function phoneCss(css, width) {
   assert.fail('Unclosed phone breakpoint');
 }
 
+test('phone layouts hide the hero, description and privacy badge without removing them on larger screens', () => {
+  const compact = phoneCss(css, 520);
+  assert.match(compact, /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.doesNotMatch(phoneCss(css, 760), /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.match(html, /class="page-intro"[\s\S]*?data-i18n="title"[\s\S]*?data-i18n="intro"[\s\S]*?class="privacy-badge"/);
+  assert.match(html, /<section class="summary-bar"/, 'the counting controls remain present');
+});
+
 test('phone layouts hide only the informational footer at the compact breakpoint', () => {
   assert.match(phoneCss(css, 520), /(?:^|})footer\{[^}]*display:none(?:;|})/);
   assert.doesNotMatch(phoneCss(css, 760), /(?:^|})footer\{[^}]*display:none/);
