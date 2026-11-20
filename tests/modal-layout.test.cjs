@@ -106,8 +106,28 @@ test('phone layouts hide the hero, description and privacy badge without removin
   assert.match(compact, /(?:^|})\.page-intro\{display:none(?:;|})/);
   assert.doesNotMatch(phoneCss(css, 760), /(?:^|})\.page-intro\{display:none(?:;|})/);
   assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /(?:^|})\.page-intro\{display:none(?:;|})/);
-  assert.match(html, /class="page-intro"[\s\S]*?data-i18n="title"[\s\S]*?data-i18n="intro"[\s\S]*?class="privacy-badge"/);
+  assert.match(html, /class="page-intro"[\s\S]*?data-i18n="intro"[\s\S]*?class="privacy-badge"/);
+  assert.doesNotMatch(html, /<h2[^>]*data-i18n="title"/, 'do not duplicate the app name in a desktop hero heading');
   assert.match(html, /<section class="summary-bar"/, 'the counting controls remain present');
+});
+
+test('layout spacing uses 8px steps while preserving hardware and safe-area geometry', () => {
+  const properties=[...css.matchAll(/(?:^|[;{])\s*((?:padding|margin)(?:-[a-z-]+)?|(?:row-|column-)?gap):([^;{}]*)/g)];
+  assert.ok(properties.length > 80, 'test should examine actual spacing declarations');
+  for(const [,property,value] of properties){
+    for(const match of value.matchAll(/(-?\d+(?:\.\d+)?)px\b/g)){
+      assert.equal(Number(match[1]) % 8, 0, `${property}: ${value} must use the 8px spacing scale`);
+    }
+  }
+  assert.match(css, /--page-pad:24px/);
+  assert.match(css, /@media\(max-width:760px\)\{:root\{--page-pad:16px\}/);
+});
+
+test('counter and summary panels use a quiet flat treatment', () => {
+  assert.match(declarations('.counter-card'), /box-shadow:none/);
+  assert.match(declarations('.summary-bar'), /box-shadow:none/);
+  assert.match(declarations('.counter-card'), /border:1px solid color-mix/);
+  assert.match(declarations('.add-card'), /border:1px dashed var\(--line\)/);
 });
 
 test('phone layouts hide only the informational footer at the compact breakpoint', () => {
