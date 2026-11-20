@@ -130,6 +130,25 @@ test('counter and summary panels use a quiet flat treatment', () => {
   assert.match(declarations('.add-card'), /border:1px dashed var\(--line\)/);
 });
 
+test('summary is a flat inline count row rather than stacked boxed statistics', () => {
+  assert.match(declarations('.summary-bar'), /padding:0/);
+  assert.match(declarations('.summary-bar'), /border:0/);
+  assert.match(declarations('.summary-bar'), /background:transparent/);
+  assert.match(declarations('.summary-stat'), /display:flex/);
+  assert.match(declarations('.summary-stat'), /background:transparent/);
+  assert.match(declarations('.summary-stat span'), /font-size:12px/);
+  assert.match(phoneCss(css, 520), /\.summary-stats\{display:flex/);
+  assert.match(phoneCss(css, 350), /\.toolbar #undoButton span\{display:none\}/);
+  assert.match(html, /id="undoButton"[^>]*data-i18n-aria="undo"/);
+});
+
+test('the desktop introduction is vertically aligned with no oversized badge padding', () => {
+  assert.match(declarations('.page-intro'), /align-items:center/);
+  assert.match(declarations('.page-intro'), /padding:0/);
+  assert.match(declarations('.privacy-badge'), /padding:0/);
+  assert.match(declarations('.main'), /padding:16px var\(--page-pad\) 56px/);
+});
+
 test('phone layouts hide only the informational footer at the compact breakpoint', () => {
   assert.match(phoneCss(css, 520), /(?:^|})footer\{[^}]*display:none(?:;|})/);
   assert.doesNotMatch(phoneCss(css, 760), /(?:^|})footer\{[^}]*display:none/);
