@@ -9,7 +9,7 @@ const payload = html.match(/const b='([A-Za-z0-9+/=]+)'/);
 if (payload) html = require('node:zlib').gunzipSync(Buffer.from(payload[1], 'base64')).toString('utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
 
-function boot(saved, { storageFails = false, language = 'en', deferFrames = false } = {}) {
+function boot(saved, { storageFails = false, language = 'en', deferFrames = false, storageReadFails = false, wakeLock = null } = {}) {
   const nodes = new Map(), all = [], timers = new Map(), frames = [];
   let nextTimer = 0, now = 1000, stored = saved ? JSON.stringify(saved) : null;
   class Element {
@@ -40,17 +40,20 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
       this.children = [];
       // Parse the action controls rendered by the real card template.
       for (const match of value.matchAll(/<(button|span)\b([^>]*)>([\s\S]*?)<\/\1>/g)) {
-        const child = new Element(), attrs = match[2];
+        const child = new Element(), attrs = match[2];child.tagName=match[1].toLowerCase();
         child.className = attrs.match(/class="([^"]+)"/)?.[1] || '';
         const action = attrs.match(/data-action="([^"]+)"/); if (action) child.dataset.action = action[1];
         child.textContent = match[3].replace(/<[^>]+>/g, '');
         this.append(child);
       }
+      const count = value.match(/<strong class="counter-value">([^<]*)<\/strong>/);
+      if(count){const strong=new Element();strong.tagName='strong';strong.className='counter-value';strong.textContent=count[1];this.append(strong)}
     }
     get innerHTML() { return this.html || ''; }
     matches(selector) {
       if (selector === '[hidden],[inert]') return this.hidden || this.inert;
       if (selector === '[data-action]') return !!this.dataset.action;
+      if (selector === 'button') return this.tagName === 'button';
       const action = selector.match(/^\[data-action="([^"]+)"\]$/);
       if (action) return this.dataset.action === action[1];
       return selector.startsWith('.') && (this.className || '').split(' ').includes(selector.slice(1));
@@ -60,6 +63,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
     getClientRects() { for (let node = this; node; node = node.parentElement) if (!node.isConnected || node.hidden || node.style.display === 'none') return []; return [{}]; }
     getBoundingClientRect() { return { left: 0, right: 500, top: 0, bottom: 500 }; }
   }
+  class InputElement extends Element {}
   const parents = [];
   const markup = html.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, '$1</script>');
   for (const match of markup.matchAll(/<\/?([a-z][\w-]*)\b[^>]*>/gi)) {
@@ -69,7 +73,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
       if (index >= 0) parents.length = index;
       continue;
     }
-    const el = new Element(); el.tagName = name;
+    const el = name === 'input' ? new InputElement() : new Element(); el.tagName = name;
     parents.at(-1)?.append(el);
     if (!/^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/.test(name) && !tag.endsWith('/>')) parents.push(el);
     for (const attr of tag.matchAll(/(aria-[\w-]+|title)="([^"]*)"/g)) el.setAttribute(attr[1], attr[2]);
@@ -89,8 +93,8 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
   });
   document.querySelector = selector => selector === 'dialog:modal' ? all.find(el => el.tagName === 'dialog' && el.open && el.modal) || null : null;
   nodes.get('appConfig').textContent = '{"version":"test"}';
-  const context = vm.createContext({ document, navigator: { language }, HTMLElement: Element, HTMLInputElement: Element,
-    localStorage: { getItem: () => stored, setItem: (key, value) => { if (storageFails) throw Error('Storage unavailable'); stored = value; } },
+  const context = vm.createContext({ document, navigator: { language, ...(wakeLock ? { wakeLock } : {}) }, HTMLElement: Element, HTMLInputElement: InputElement,
+    localStorage: { getItem: () => {if(storageReadFails)throw Error('Storage read unavailable');return stored}, setItem: (key, value) => { if (storageFails) throw Error('Storage unavailable'); stored = value; } },
     Date: class extends Date { static now() { return ++now; } },
     setTimeout: fn => { timers.set(++nextTimer, fn); return nextTimer; }, clearTimeout: id => timers.delete(id),
     requestAnimationFrame: fn => deferFrames ? frames.push(fn) : fn(),

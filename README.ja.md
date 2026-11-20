@@ -117,6 +117,12 @@
 
 `main` へのプッシュ時には `scripts/check-repository.ps1` が実行され、`dist/index.html` と自己展開版を再生成してから公開します。
 
+## マージ後のタグとGitHub Release
+
+PRを `main` にマージすると、GitHub Actionsの **Publish GitHub Release** が実行されます。`app.config.json` の `version` に対応するタグ（例：`v1.0.4`）とGitHub Releaseが未作成の場合、ビルドと回帰テストが成功した後に自動で作成します。Releaseには通常の単一HTMLと自己展開版のHTMLを添付します。
+
+すでに同じバージョンのReleaseがある場合は再作成しません。次のリリースでは、PRをマージする前に `version` を更新してください。失敗した場合は、Actionsのワークフローを手動で再実行できます。
+
 ## 開発とビルド
 
 ```text

@@ -3,7 +3,7 @@
 ## 1. Product identity
 
 - **Name:** Tap Counter
-- **Version:** 1.0.3
+- **Version:** 1.0.4
 - **Purpose:** Replace simple tally-counter apps with an installation-free, smartphone-first multi-counter that works entirely in the browser.
 - **Primary users:** People counting visitors, inventory, repetitions, laps, events, observations, or any repeated item on a phone.
 - **Release artifacts:** `dist/index.html` and `dist/index.self-extract.html`
@@ -58,6 +58,8 @@ A user can create one or more named counters, increment them quickly with large 
 
 - Mobile-first from 320px upward.
 - The informational page footer is hidden at the existing 520px phone breakpoint and retained on wider screens; action controls and their content clearance remain unchanged.
+- The redundant hero heading is omitted at all widths. Above 520px the introduction retains its description and local-processing badge; at 520px or below the entire introduction remains hidden, leaving the counting controls visible.
+- Layout margins, padding and gaps use an 8px spacing scale (including 16px mobile and 24px desktop gutters), except browser-controlled safe-area insets. Counter and summary cards use subtle borders without elevated shadows.
 - One-handed use is prioritized: primary tap target is large and increment feedback is immediate.
 - Multi-counter cards remain compact enough to scan at a glance.
 - Focus mode hides configuration and treats the screen as a physical tally counter.
@@ -88,7 +90,7 @@ Core counting, persistence, and Focus mode work via `file://`. Vibration and Scr
 - Default counter works with one tap after first load.
 - Add, edit name/current value, reorder, increment, decrement, reset, delete, undo, lock, Focus mode, copy summary, and language switch work.
 - An edit accepts only whole numbers from -999999 to 999999, changes name and value atomically, and creates one Undo entry. Invalid edits, cancellation, and unchanged saves do not change counters or Undo history.
-- State survives reload when localStorage is available.
+- State survives reload when localStorage is available; failed reads or writes display a visible storage warning.
 - A card's decrement/focus/menu controls never increment the counter accidentally.
 - Rapid tapping does not select text or zoom the page unexpectedly.
-- Japanese and English fit at 320px width without horizontal page overflow.
+- Japanese and English fit at 320px width without horizontal page overflow; 6–7 digit values fit cards and short landscape Focus views.

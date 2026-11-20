@@ -101,6 +101,54 @@ function phoneCss(css, width) {
   assert.fail('Unclosed phone breakpoint');
 }
 
+test('phone layouts hide the hero, description and privacy badge without removing them on larger screens', () => {
+  const compact = phoneCss(css, 520);
+  assert.match(compact, /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.doesNotMatch(phoneCss(css, 760), /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /(?:^|})\.page-intro\{display:none(?:;|})/);
+  assert.match(html, /class="page-intro"[\s\S]*?data-i18n="intro"[\s\S]*?class="privacy-badge"/);
+  assert.doesNotMatch(html, /<h2[^>]*data-i18n="title"/, 'do not duplicate the app name in a desktop hero heading');
+  assert.match(html, /<section class="summary-bar"/, 'the counting controls remain present');
+});
+
+test('layout spacing uses 8px steps while preserving hardware and safe-area geometry', () => {
+  const properties=[...css.matchAll(/(?:^|[;{])\s*((?:padding|margin)(?:-[a-z-]+)?|(?:row-|column-)?gap):([^;{}]*)/g)];
+  assert.ok(properties.length > 80, 'test should examine actual spacing declarations');
+  for(const [,property,value] of properties){
+    for(const match of value.matchAll(/(-?\d+(?:\.\d+)?)px\b/g)){
+      assert.equal(Number(match[1]) % 8, 0, `${property}: ${value} must use the 8px spacing scale`);
+    }
+  }
+  assert.match(css, /--page-pad:24px/);
+  assert.match(css, /@media\(max-width:760px\)\{:root\{--page-pad:16px\}/);
+});
+
+test('counter and summary panels use a quiet flat treatment', () => {
+  assert.match(declarations('.counter-card'), /box-shadow:none/);
+  assert.match(declarations('.summary-bar'), /box-shadow:none/);
+  assert.match(declarations('.counter-card'), /border:1px solid color-mix/);
+  assert.match(declarations('.add-card'), /border:1px dashed var\(--line\)/);
+});
+
+test('summary is a flat inline count row rather than stacked boxed statistics', () => {
+  assert.match(declarations('.summary-bar'), /padding:0/);
+  assert.match(declarations('.summary-bar'), /border:0/);
+  assert.match(declarations('.summary-bar'), /background:transparent/);
+  assert.match(declarations('.summary-stat'), /display:flex/);
+  assert.match(declarations('.summary-stat'), /background:transparent/);
+  assert.match(declarations('.summary-stat span'), /font-size:12px/);
+  assert.match(phoneCss(css, 520), /\.summary-stats\{display:flex/);
+  assert.match(phoneCss(css, 350), /\.toolbar #undoButton span\{display:none\}/);
+  assert.match(html, /id="undoButton"[^>]*data-i18n-aria="undo"/);
+});
+
+test('the desktop introduction is vertically aligned with no oversized badge padding', () => {
+  assert.match(declarations('.page-intro'), /align-items:center/);
+  assert.match(declarations('.page-intro'), /padding:0/);
+  assert.match(declarations('.privacy-badge'), /padding:0/);
+  assert.match(declarations('.main'), /padding:16px var\(--page-pad\) 56px/);
+});
+
 test('phone layouts hide only the informational footer at the compact breakpoint', () => {
   assert.match(phoneCss(css, 520), /(?:^|})footer\{[^}]*display:none(?:;|})/);
   assert.doesNotMatch(phoneCss(css, 760), /(?:^|})footer\{[^}]*display:none/);

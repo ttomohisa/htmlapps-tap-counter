@@ -1,8 +1,22 @@
 # Changelog
 
-## Unreleased
+## 1.0.4 - 2026-11-20
 
+- Align layout padding, margins and gaps to 8px increments and make cards flatter, more compact and visually quieter.
+- Remove the redundant desktop hero heading while retaining the desktop explanation and local-processing label; continue hiding the whole introduction on phones.
+- Refine the intro-to-dashboard spacing and replace the boxed summary tiles with compact inline totals and a clean mobile action row.
+- Update the Japanese header subtitle to 「画面をタップしてすぐ数える」.
+
+- Preserve keyboard focus through count changes and Undo; let Enter/Space activate focused Focus-mode buttons correctly.
+- Fit six- and seven-character values on narrow screens and keep short landscape Focus screens readable.
+- Release stale asynchronous Wake Locks after Focus exits or settings change.
+- Warn when localStorage is unavailable instead of claiming unsaved counts were stored.
+- Keep replacement default counter names localized after deleting the final counter.
+- Localize accessible labels on dialog close controls and Focus exit.
+- Add Node and Chromium regression coverage for the corrected interactions.
 - Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
+- Hide the introduction (heading, description, local-processing badge) at the existing 520px phone breakpoint, while keeping counting controls visible.
+- Publish versioned Git tags and GitHub Releases with both single-HTML builds automatically after merging into main.
 
 ## 1.0.3 - 2026-10-11
 
@@ -11,8 +25,6 @@
 - 集中モード終了時に同じカウンターの「集中」ボタンへキーボードフォーカスを戻し、新しい操作やモーダルへの割り込みを防止。
 - Added Japanese/English small-screen guidance and modal CSS/event regression tests; retained the decorative local-processing shield.
 - ダイアログ表示中の背景スクロールを防ぎ、内部のスクロールと集中モードを維持しました。小さい画面向けの案内と回帰テストを追加しました。
-
-## Unreleased
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
 - Localize the Help close control in Japanese and English.
