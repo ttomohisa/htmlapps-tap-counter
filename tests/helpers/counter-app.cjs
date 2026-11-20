@@ -63,6 +63,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
     getClientRects() { for (let node = this; node; node = node.parentElement) if (!node.isConnected || node.hidden || node.style.display === 'none') return []; return [{}]; }
     getBoundingClientRect() { return { left: 0, right: 500, top: 0, bottom: 500 }; }
   }
+  class InputElement extends Element {}
   const parents = [];
   const markup = html.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, '$1</script>');
   for (const match of markup.matchAll(/<\/?([a-z][\w-]*)\b[^>]*>/gi)) {
@@ -72,7 +73,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
       if (index >= 0) parents.length = index;
       continue;
     }
-    const el = new Element(); el.tagName = name;
+    const el = name === 'input' ? new InputElement() : new Element(); el.tagName = name;
     parents.at(-1)?.append(el);
     if (!/^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/.test(name) && !tag.endsWith('/>')) parents.push(el);
     for (const attr of tag.matchAll(/(aria-[\w-]+|title)="([^"]*)"/g)) el.setAttribute(attr[1], attr[2]);
@@ -92,7 +93,7 @@ function boot(saved, { storageFails = false, language = 'en', deferFrames = fals
   });
   document.querySelector = selector => selector === 'dialog:modal' ? all.find(el => el.tagName === 'dialog' && el.open && el.modal) || null : null;
   nodes.get('appConfig').textContent = '{"version":"test"}';
-  const context = vm.createContext({ document, navigator: { language, ...(wakeLock ? { wakeLock } : {}) }, HTMLElement: Element, HTMLInputElement: Element,
+  const context = vm.createContext({ document, navigator: { language, ...(wakeLock ? { wakeLock } : {}) }, HTMLElement: Element, HTMLInputElement: InputElement,
     localStorage: { getItem: () => {if(storageReadFails)throw Error('Storage read unavailable');return stored}, setItem: (key, value) => { if (storageFails) throw Error('Storage unavailable'); stored = value; } },
     Date: class extends Date { static now() { return ++now; } },
     setTimeout: fn => { timers.set(++nextTimer, fn); return nextTimer; }, clearTimeout: id => timers.delete(id),
