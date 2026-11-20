@@ -117,6 +117,12 @@ This repository includes a workflow that builds and verifies the standalone HTML
 
 Each push to `main` runs `scripts/check-repository.ps1`, regenerates `dist/index.html` and the self-extracting build, verifies them, and then deploys the `dist` directory.
 
+## Tags and GitHub Releases after merge
+
+Merging a pull request into `main` starts the **Publish GitHub Release** workflow. If the tag (for example, `v1.0.4`) and GitHub Release for the `app.config.json` version do not exist, the workflow builds and tests both standalone HTML variants, then creates the tag and release with both HTML files attached.
+
+An existing release for that version is left unchanged. Update `version` before merging a subsequent release PR. The workflow can also be rerun manually from GitHub Actions after a failure.
+
 ## Development and build layout
 
 ```text
