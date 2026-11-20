@@ -37,6 +37,12 @@ for (const language of ['ja-JP', 'en-US']) {
   });
 }
 
+test('Japanese header subtitle uses the requested punctuation', () => {
+  const app = boot(undefined, { language: 'ja' });
+  assert.equal(app.translated('brandMeta'), '画面をタップしてすぐ数える');
+  assert.doesNotMatch(app.translated('brandMeta'), /、/);
+});
+
 test('Help close label follows the current language', () => {
   const app = boot(undefined, { language: 'ja' });
   assert.equal(closeButton(app)['aria-label'], '閉じる');
