@@ -185,7 +185,7 @@
         const card=[...document.querySelectorAll('.counter-card')].find(el=>el.dataset.id===id);
         if(card){
           card.dataset.countLength=String(c.count).length;
-          const value=card.querySelector('.counter-value');if(value)value.textContent=c.count;
+          const value=card.querySelector('.counter-value');if(value)value.textContent=String(c.count);
           card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
           const burst=card.querySelector('.counter-burst');
           if(burst){burst.textContent=delta>0?'+1':'−1';burst.classList.remove('show');void burst.offsetWidth;burst.classList.add('show')}
