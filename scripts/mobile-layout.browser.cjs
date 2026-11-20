@@ -91,10 +91,17 @@ async function main() {
         if (await page.locator('html').getAttribute('lang') !== language) await page.locator(LANGUAGE).click();
         assert.equal((await page.locator('[data-i18n="localOnly"]').textContent()).trim(), language === 'en' ? 'Fully local processing' : '完全ローカル処理', label + ': privacy wording');
         assert.equal(await page.locator('body > footer').isVisible(), width > PHONE_WIDTH, label + ': informational footer breakpoint');
-        for (const selector of ['.page-intro', '.page-intro h2', '.page-intro p', '.privacy-badge']) {
+        assert.equal(await page.locator('.page-intro h2').count(),0,label + ': hero title is removed at all sizes');
+        for (const selector of ['.page-intro', '.page-intro p', '.privacy-badge']) {
           assert.equal(await page.locator(selector).isVisible(), width > PHONE_WIDTH, label + ': intro visibility for ' + selector);
         }
         assert.equal(await page.locator('.summary-bar').isVisible(), true, label + ': primary counter controls remain visible');
+        const cardStyling=await page.locator('.counter-card').first().evaluate(el=>{
+          const style=getComputedStyle(el);return {shadow:style.boxShadow,border:style.borderColor};
+        });
+        assert.equal(cardStyling.shadow,'none',label+': counter cards have no raised shadow');
+        const gutter=await page.locator('.main').evaluate(el=>getComputedStyle(el).paddingLeft);
+        assert.equal(gutter,width<=760?'16px':'24px',label+': gutter follows 8px layout scale');
         await exerciseActions(page, width, label);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), label + ': page width');
         // Responsive changes must not leave the informational footer in a stale state.
