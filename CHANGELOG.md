@@ -2,6 +2,9 @@
 
 ## 1.0.4 - 2026-11-20
 
+- Align layout padding, margins and gaps to 8px increments and make cards flatter, more compact and visually quieter.
+- Remove the redundant desktop hero heading while retaining the desktop explanation and local-processing label; continue hiding the whole introduction on phones.
+
 - Preserve keyboard focus through count changes and Undo; let Enter/Space activate focused Focus-mode buttons correctly.
 - Fit six- and seven-character values on narrow screens and keep short landscape Focus screens readable.
 - Release stale asynchronous Wake Locks after Focus exits or settings change.
