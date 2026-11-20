@@ -96,6 +96,29 @@ async function main() {
           assert.equal(await page.locator(selector).isVisible(), width > PHONE_WIDTH, label + ': intro visibility for ' + selector);
         }
         assert.equal(await page.locator('.summary-bar').isVisible(), true, label + ': primary counter controls remain visible');
+        const layout=await page.evaluate(()=>{
+          const box=s=>document.querySelector(s).getBoundingClientRect();
+          const summary=document.querySelector('.summary-bar'),stat=document.querySelector('.summary-stat'),undo=document.querySelector('#undoButton');
+          const style=getComputedStyle(summary),statStyle=getComputedStyle(stat),header=box('.app-header'),main=box('.main'),summaryBox=box('.summary-bar');
+          return {summaryBorder:style.borderTopWidth,summaryBg:style.backgroundColor,statBg:statStyle.backgroundColor,
+            statsBox:box('.summary-stats').toJSON(),toolbarBox:box('.toolbar').toJSON(),
+            undoAria:undo.getAttribute('aria-label'),undoVisibleText:getComputedStyle(undo.querySelector('span')).display!=='none',
+            headerBottom:header.bottom,mainTop:main.top,summaryTop:summaryBox.top,
+            intro:document.querySelector('.page-intro').getBoundingClientRect().toJSON(),
+            buttonWidths:[...document.querySelectorAll('.toolbar button')].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth}))};
+        });
+        assert.equal(layout.summaryBorder,'0px',label+': summary should not be an outlined card');
+        assert.equal(layout.summaryBg,'rgba(0, 0, 0, 0)',label+': summary has no opaque panel');
+        assert.equal(layout.statBg,'rgba(0, 0, 0, 0)',label+': stat tiles have no filled background');
+        assert.equal(layout.undoAria,language==='ja'?'元に戻す':'Undo',label+': Undo remains accessible when text is hidden');
+        assert.equal(layout.undoVisibleText,width>350,label+': compact phone shortcut keeps controls on one row');
+        if(width<=760)assert.ok(layout.toolbarBox.y>=layout.statsBox.bottom-1,label+': mobile controls sit below the summary');
+        if(width<=520)assert.ok(layout.summaryTop-layout.headerBottom<=24,label+': dashboard starts close to mobile header');
+        else{
+          assert.ok(layout.intro.y-layout.headerBottom<=24,label+': desktop intro starts close to header');
+          assert.ok(layout.summaryTop-layout.intro.bottom<=24,label+': desktop intro has compact bottom spacing');
+        }
+        for(const button of layout.buttonWidths)assert.ok(button.scrollWidth<=button.width+1,label+': toolbar button fits available width');
         const cardStyling=await page.locator('.counter-card').first().evaluate(el=>{
           const style=getComputedStyle(el);return {shadow:style.boxShadow,border:style.borderColor};
         });
