@@ -1,7 +1,14 @@
 # Changelog
 
-## Unreleased
+## 1.0.4 - 2026-11-20
 
+- Preserve keyboard focus through count changes and Undo; let Enter/Space activate focused Focus-mode buttons correctly.
+- Fit six- and seven-character values on narrow screens and keep short landscape Focus screens readable.
+- Release stale asynchronous Wake Locks after Focus exits or settings change.
+- Warn when localStorage is unavailable instead of claiming unsaved counts were stored.
+- Keep replacement default counter names localized after deleting the final counter.
+- Localize accessible labels on dialog close controls and Focus exit.
+- Add Node and Chromium regression coverage for the corrected interactions.
 - Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
 
 ## 1.0.3 - 2026-10-11
@@ -11,8 +18,6 @@
 - 集中モード終了時に同じカウンターの「集中」ボタンへキーボードフォーカスを戻し、新しい操作やモーダルへの割り込みを防止。
 - Added Japanese/English small-screen guidance and modal CSS/event regression tests; retained the decorative local-processing shield.
 - ダイアログ表示中の背景スクロールを防ぎ、内部のスクロールと集中モードを維持しました。小さい画面向けの案内と回帰テストを追加しました。
-
-## Unreleased
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
 - Localize the Help close control in Japanese and English.
