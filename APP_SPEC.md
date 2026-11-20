@@ -58,7 +58,8 @@ A user can create one or more named counters, increment them quickly with large 
 
 - Mobile-first from 320px upward.
 - The informational page footer is hidden at the existing 520px phone breakpoint and retained on wider screens; action controls and their content clearance remain unchanged.
-- The introduction heading, description, and local-processing badge are hidden at widths up to 520px; counting controls remain visible and the introduction returns above that breakpoint.
+- The redundant hero heading is omitted at all widths. Above 520px the introduction retains its description and local-processing badge; at 520px or below the entire introduction remains hidden, leaving the counting controls visible.
+- Layout margins, padding and gaps use an 8px spacing scale (including 16px mobile and 24px desktop gutters), except browser-controlled safe-area insets. Counter and summary cards use subtle borders without elevated shadows.
 - One-handed use is prioritized: primary tap target is large and increment feedback is immediate.
 - Multi-counter cards remain compact enough to scan at a glance.
 - Focus mode hides configuration and treats the screen as a physical tally counter.
