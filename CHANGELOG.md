@@ -10,6 +10,8 @@
 - Localize accessible labels on dialog close controls and Focus exit.
 - Add Node and Chromium regression coverage for the corrected interactions.
 - Hide the informational footer at phone widths while preserving action controls and the wider-screen footer.
+- Hide the introduction (heading, description, local-processing badge) at the existing 520px phone breakpoint, while keeping counting controls visible.
+- Publish versioned Git tags and GitHub Releases with both single-HTML builds automatically after merging into main.
 
 ## 1.0.3 - 2026-10-11
 
