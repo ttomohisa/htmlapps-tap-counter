@@ -72,7 +72,7 @@ async function main() {
   try {
     const cases = [];
     for (const language of ['ja', 'en']) {
-      for (const [width, height] of [[1360,900], [PHONE_WIDTH + 1,568], [PHONE_WIDTH,568], [320,568], [393,252]]) cases.push({file:'dist/index.html', language, width, height});
+      for (const [width, height] of [[1360,900], [761,568], [PHONE_WIDTH + 1,568], [PHONE_WIDTH,568], [360,568], [351,568], [320,568], [393,252]]) cases.push({file:'dist/index.html', language, width, height});
     }
     // Also load the compressed and root download variants, without duplicating the full matrix.
     cases.push({file:'dist/index.self-extract.html', language:'en', width:360, height:640});
