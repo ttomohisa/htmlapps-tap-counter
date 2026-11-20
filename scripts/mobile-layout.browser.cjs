@@ -91,13 +91,19 @@ async function main() {
         if (await page.locator('html').getAttribute('lang') !== language) await page.locator(LANGUAGE).click();
         assert.equal((await page.locator('[data-i18n="localOnly"]').textContent()).trim(), language === 'en' ? 'Fully local processing' : '完全ローカル処理', label + ': privacy wording');
         assert.equal(await page.locator('body > footer').isVisible(), width > PHONE_WIDTH, label + ': informational footer breakpoint');
+        for (const selector of ['.page-intro', '.page-intro h2', '.page-intro p', '.privacy-badge']) {
+          assert.equal(await page.locator(selector).isVisible(), width > PHONE_WIDTH, label + ': intro visibility for ' + selector);
+        }
+        assert.equal(await page.locator('.summary-bar').isVisible(), true, label + ': primary counter controls remain visible');
         await exerciseActions(page, width, label);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), label + ': page width');
         // Responsive changes must not leave the informational footer in a stale state.
         await page.setViewportSize({width:PHONE_WIDTH + 1, height});
         assert.equal(await page.locator('body > footer').isVisible(), true, label + ': wider resize');
+        assert.equal(await page.locator('.page-intro').isVisible(), true, label + ': hero returns above phone breakpoint');
         await page.setViewportSize({width:PHONE_WIDTH, height});
         assert.equal(await page.locator('body > footer').isVisible(), false, label + ': phone resize');
+        assert.equal(await page.locator('.page-intro').isVisible(), false, label + ': hero stays hidden at phone breakpoint');
         await page.setViewportSize({width,height});
         if (file === 'dist/index.html' && [1360,320].includes(width)) await page.screenshot({path:path.join(artifacts, `${language}-${width}.png`), fullPage:true});
 
