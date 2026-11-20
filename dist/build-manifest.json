@@ -1,7 +1,7 @@
 {
   "name": "Tap Counter",
-  "version": "1.0.3",
-  "generatedAt": "2026-11-14T01:05:05.9516194+00:00",
+  "version": "1.0.4",
+  "generatedAt": "2026-11-20T09:50:00.0000000+00:00",
   "dependencyCount": 0,
   "source": "src/index.template.html"
 }
