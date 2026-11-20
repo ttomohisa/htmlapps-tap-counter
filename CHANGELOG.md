@@ -4,6 +4,8 @@
 
 - Align layout padding, margins and gaps to 8px increments and make cards flatter, more compact and visually quieter.
 - Remove the redundant desktop hero heading while retaining the desktop explanation and local-processing label; continue hiding the whole introduction on phones.
+- Refine the intro-to-dashboard spacing and replace the boxed summary tiles with compact inline totals and a clean mobile action row.
+- Update the Japanese header subtitle to 「画面をタップしてすぐ数える」.
 
 - Preserve keyboard focus through count changes and Undo; let Enter/Space activate focused Focus-mode buttons correctly.
 - Fit six- and seven-character values on narrow screens and keep short landscape Focus screens readable.
